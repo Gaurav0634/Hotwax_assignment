@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Store Person Management</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@200&family=Blinker&family=Jost:wght@100&family=Poppins:wght@200&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      background-color: #f4f4f4;
+      margin: 20px;
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    form, div {
+      width: 30%;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 10px; /* Margin between sections */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: calc(100% - 20px);
+      padding: 10px 20px;
+      background-color: #007bff; /* Button color */
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3; /* Button hover color */
+    }
+
+    #personDetails {
+      width: 100%;
+      height: 200px; /* Set max height */
+      overflow-y: auto; /* Add vertical scrollbar if needed */
+      background: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Online Store Management</h1>
+
+  <form id="createPersonForm">
+    <h2>Create Person</h2>
+    <label for="partyId">Party ID:</label>
+    <input type="text" id="partyId" name="PARTY_ID">
+    <label for="salutation">Salutation:</label>
+    <input type="text" id="salutation" name="SALUTATION">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="FIRST_NAME">
+    <label for="middleName">Middle Name:</label>
+    <input type="text" id="middleName" name="MIDDLE_NAME">
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="LAST_NAME">
+    <label for="gender">Gender:</label>
+    <input type="text" id="gender" name="GENDER">
+    <label for="birthDate">Birth Date:</label>
+    <input type="text" id="birthDate" name="BIRTH_DATE">
+    <label for="maritalStatus">Marital Status Enum ID:</label>
+    <input type="text" id="maritalStatus" name="MARITAL_STATUS_ENUM_ID">
+    <label for="employmentStatus">Employment Status Enum ID:</label>
+    <input type="text" id="employmentStatus" name="EMPLOYMENT_STATUS_ENUM_ID">
+    <label for="occupation">Occupation:</label>
+    <input type="text" id="occupation" name="OCCUPATION">
+    <button type="submit">Create Person</button>
+  </form>
+
+  <div>
+    <h2>Get Person</h2>
+    <label for="getPartyId">Enter Party ID:</label>
+    <input type="text" id="getPartyId" name="getPartyId">
+    <button onclick="getPersonDetails()">Get Person Details</button>
+    <div id="personDetails"></div>
+  </div>
+
+  <form id="updatePersonForm">
+    <h2>Update Person</h2>
+    <label for="updatePartyId">Party ID:</label>
+    <input type="text" id="updatePartyId" name="updatePartyId">
+    <label for="updateSalutation">Salutation:</label>
+    <input type="text" id="updateSalutation" name="SALUTATION">
+    <label for="updateFirstName">First Name:</label>
+    <input type="text" id="updateFirstName" name="FIRST_NAME">
+    <label for="updateMiddleName">Middle Name:</label>
+    <input type="text" id="updateMiddleName" name="MIDDLE_NAME">
+    <label for="updateLastName">Last Name:</label>
+    <input type="text" id="updateLastName" name="LAST_NAME">
+    <label for="updateGender">Gender:</label>
+    <input type="text" id="updateGender" name="GENDER">
+    <label for="updateBirthDate">Birth Date:</label>
+    <input type="text" id="updateBirthDate" name="BIRTH_DATE">
+    <label for="updateMaritalStatus">Marital Status Enum ID:</label>
+    <input type="text" id="updateMaritalStatus" name="MARITAL_STATUS_ENUM_ID">
+    <label for="updateEmploymentStatus">Employment Status Enum ID:</label>
+    <input type="text" id="updateEmploymentStatus" name="EMPLOYMENT_STATUS_ENUM_ID">
+    <label for="updateOccupation">Occupation:</label>
+    <input type="text" id="updateOccupation" name="OCCUPATION">
+    <button type="submit">Update Person</button>
+  </form>
+
+  <script>
+    const createPersonForm = document.getElementById('createPersonForm');
+    createPersonForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const formData = new FormData(createPersonForm);
+      const response = await fetch('http://127.0.0.1:5000/create_person', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(formData))
+      });
+      const result = await response.json();
+      alert(result.message);
+    });
+
+    async function getPersonDetails() {
+      const getPartyId = document.getElementById('getPartyId').value;
+      const response = await fetch(`http://127.0.0.1:5000/persons/${getPartyId}`);
+      const personDetails = await response.json();
+      document.getElementById('personDetails').innerHTML = JSON.stringify(personDetails);
+    }
+
+    const updatePersonForm = document.getElementById('updatePersonForm');
+    updatePersonForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const formData = new FormData(updatePersonForm);
+      const partyId = formData.get('updatePartyId');
+      const response = await fetch(`http://127.0.0.1:5000/persons/${partyId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(formData))
+      });
+      const result = await response.json();
+      alert(result.message);
+    });
+  </script>
+</body>
+</html>
